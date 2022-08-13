@@ -166,7 +166,11 @@ class Bot( asynchat.async_chat ):
             return
         self.create_socket( socket.AF_INET, socket.SOCK_STREAM )
         self.connect( ( auth_data['chat_url'], int(auth_data['chat_port']) ) )
-        asyncore.loop()
+        # TODO: Figure out how to make this not timeout due to inactivity.
+        # The PK server does not send ping/pongs so it seems to timeout, and
+        # using `0` value did not seem to work. So, for now, just set an
+        # arbitrarily large timeout.
+        asyncore.loop(timeout=99999)
     def setup(self): 
         masterserver.set_region(self.config.region)
         self.variables = {}
